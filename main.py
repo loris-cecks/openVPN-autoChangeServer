@@ -19,7 +19,6 @@ class VPNServerChanger:
         self.auth_file = self.script_dir / "auth.txt"
         self.check_interval = 1800  # 30 minutes in seconds
         self.recheck_delay = 15     # seconds to wait before checking new IP
-        self.log_file = self.script_dir / "vpn_reconnect.log"
         self.temp_log = self.script_dir / "openvpn_temp.log"
         self.max_reconnect_attempts = 3
         
@@ -28,7 +27,6 @@ class VPNServerChanger:
             level=logging.INFO,
             format='%(asctime)s : %(message)s',
             handlers=[
-                logging.FileHandler(self.log_file),
                 logging.StreamHandler()
             ]
         )
