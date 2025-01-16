@@ -151,7 +151,24 @@ class VPNServerChanger:
         sys.exit(0)
 
     def verify_requirements(self):
-        """Verify all required files and commands exist."""
+        """Verify all required files and commands exist and disable IPv6."""
+        # Disable IPv6
+        try:
+            ipv6_settings = {
+                'net.ipv6.conf.all.disable_ipv6': 1,
+                'net.ipv6.conf.default.disable_ipv6': 1,
+                'net.ipv6.conf.lo.disable_ipv6': 1
+            }
+            
+            for setting, value in ipv6_settings.items():
+                subprocess.run(['sysctl', '-w', f'{setting}={value}'], 
+                             check=True, 
+                             capture_output=True)
+            self.logger.info("IPv6 disabled successfully")
+        except subprocess.SubprocessError as e:
+            self.logger.error(f"Failed to disable IPv6: {e}")
+            return False
+
         # Check configuration directory
         if not self.config_dir.exists():
             self.logger.error(f"Configuration directory {self.config_dir} not found")
